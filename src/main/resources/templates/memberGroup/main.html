@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <!--    <meta name="description" content=""/>-->
+  <!--    <meta name="author" content=""/>-->
+  <title>Schedule program</title>
+
+  <link th:href="@{/css/style.css}" rel="stylesheet"/>
+
+  <link rel="stylesheet" href="/webjars/fullcalendar/5.6.0/main.css" />
+  <script src="/webjars/fullcalendar/5.6.0/main.js"></script>
+
+</head>
+<body>
+<div id="header">
+  <div id="logo">
+    <a th:href="|@{/main}|">Schedule</a>
+  </div>
+  <div id="menu">
+<!--    <li><a th:href="|@{/chat/chat}|">Chat</a></li>-->
+    <li><a th:href="|@{/chat/}|">Chat</a></li>
+    <li><a th:href="|@{/member/login}|">LOGIN</a></li> <!--토글 버튼? if문?-->
+  </div>
+</div>
+<div id="contents">
+  <div id="left">
+    <h3 th:text>Group List</h3>
+    <!--    <ul>-->
+    <!--      <li th:each="dtoList:${list}">-->
+    <!--        <a th:href="@{/group/read(groupName=${dtoList.groupName})}">[[${dtoList.groupName}]]</a>-->
+    <!--        [[${dtoList.groupManager}]]-->
+    <!--      </li>-->
+    <!--    </ul>-->
+    <div>
+      <!--      <a th:href="|@{/group/register}|">-->
+      <!--        <button type="button">Register</button>-->
+      <!--      </a>-->
+    </div>
+  </div>
+  <div id="center"></div>
+  <div id="right"></div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      events: [
+        // todolist 동적 로드/thymeleaf로 데이터 전달
+        // { title: '이벤트 1', start: '2023-11-01', end: '2023-11-02' },
+        // 예: { title: '이벤트 2', start: '2023-11-15', end: '2023-11-17' },
+      ]
+    });
+    calendar.render();
+  });
+</script>
+</body>
+</html>

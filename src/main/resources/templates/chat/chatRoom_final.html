@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/groupLayout.html}">
+
+<div class="g_info" layout:fragment="content">
+  <form action="/memberGroup/g_delete" method="post">
+    <!--        <span id="groupName" th:name="${groupName}">[[${groupName}]]</span>-->
+    <span id="groupName" th:text="${groupName != null} ? ${groupName} : 'Default Value'"></span>
+  </form>
+  <button type="button" id="g_deleteBtn">그룹삭제</button>
+</div>
+
+<div class="gmain_2" layout:fragment="content2">
+  <div class="g_chat_list">
+    <div class="g_todo">
+      <input type="button" value="그룹todo" id="g_todoBtn">
+    </div>
+    <div class="g_chat">
+
+      <!--채팅방 생성-->
+      <button id="createRoom">채팅방 생성</button>
+
+      <form id="createRoomForm" th:action="@{/chat/createRoom(groupName=${groupName})}" method="post"> <!--style="display: none;" 생략-->
+        <input type="text" name="name" placeholder="채팅방 이름">
+        <button type="submit" class="btn btn-primary">방 만들기</button>
+      </form>
+
+      <!--채팅리스트-->
+      <button id="chatList">채팅방 목록</button>
+
+      <!--            <table id="tblChatList" style="display: none;"> &lt;!&ndash;display none - script에서 조건에 따라 diplay/none 처리&ndash;&gt;-->
+      <table id="tblChatList">
+        <tr th:each="room : ${roomList}">
+          <td>
+            <!--                        <a th:href="@{/chat/chatRoom(roomId=${room.roomId})}" th:text="${room.name}"></a>-->
+            <a th:href="@{/chat/chatRoom(roomId=${room.roomId},groupName=${groupName})}" th:text="${room.name}"></a>
+            <!--                        <input type="button" th:value="${room.name}" class="RoomName">-->
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="g_chat_inner">
+    <h3>[[${room.name}]]</h3>
+    <div class="message-container"> <!--class.chat-container-->
+      <input type="text" placeholder="보낼 메세지를 입력하세요." class="content" id="messageInput"> <!--id. message-->
+      <button type="button" value="전송" class="sendBtn" onclick="sendMsg()">전송</button> <!--id. send-->
+      <button type="button" value="방나가기" class="quit" onclick="quit()">방 나가기 </button>
+      <div>
+        <span>메세지</span>
+        <div class="message-text"></div>
+        <div class="msgArea"></div> <!--class, id.chat-box-->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+  // var groupName = document.getElementById("groupName");
+  var groupNameElement = document.getElementById("groupName");
+  var groupName = groupNameElement ? groupNameElement.textContent : null;
+
+  // 채팅방 생성
+  // document.getElementById("createRoom").addEventListener("click", function(){
+  //     document.getElementById("createRoomForm").style.display="table"; // 테이블 표시
+
+  // var getGroupName = [[${groupName}]];
+  // console.log("groupName============ " + groupName);
+  // console.log("groupNameIn========== " + getGroupName);
+  //
+  // // 조건에 따라 채팅방 생성 폼 표시/숨김
+  // if(groupName == getGgroupName){
+  //     document.getElementById("createRoomForm").style.display="table"; // 테이블 표시
+  // }else{
+  //     document.getElementById("createRoomForm").style.display="none"; // 테이블 숨김
+  // }
+  // });
+
+  // var groupName = document.getElementsByClassName('groupName');
+  // var groupName = [[${groupName}]];
+
+  // CreateRoom 해서 채팅방 입장
+  // $(".newRoom").click(function(){
+  //     // var groupName = document.getElementsByClassName('groupName');
+  //     console.log("createRoom-groupName: "+groupName);
+  //     location.href="/chat/createRoom/g_main?groupName="+groupName;
+  // });
+
+  // 그룹 유저만 채팅 리스트 접속
+  document.getElementById("chatList").addEventListener("click", function(){
+    document.getElementById("tblChatList").style.display="table"; // 테이블 표시
+  });
+
+
+  $("#g_registerBtn").click(function (){
+    location.href = "/todo/g_register?memberId="+[[${memberId}]]+"&groupName="+[[${groupName}]]
+  })
+
+  var actionForm = $("form");
+  $("#g_deleteBtn").click(function (){
+    var groupName = [[${groupName}]];
+    const url = "/memberGroup/g_delete?groupName="+groupName
+    console.log(groupName)
+    if(!confirm("그룹을 삭제하시겠습니까?")){
+      return
+    }
+    actionForm.attr("action","/memberGroup/g_delete?groupName="+groupName).attr("method","post").submit();
+  });
+
+  // var groupName = [[${groupName}]];
+  // const url = "/todo/plan?groupName="+groupName
+  //
+  // $(function (){
+  //     var request = $.ajax({
+  //         url:url,
+  //         method:"GET",
+  //         dataType:"json"
+  //     });
+  //     request.done(function (data){
+  //         console.log(data);
+  //         var calendarEl = document.getElementById('cal');
+  //
+  //         var calendar = new FullCalendar.Calendar(calendarEl,{
+  //             initialView: 'dayGridMonth',
+  //             headerToolbar:{
+  //                 left:'prev,next today',
+  //                 center:'title',
+  //                 right:'dayGridMonth,timeGridWeek,timeGridDay'
+  //             },
+  //             eventClick: function (info) {
+  //                 console.log(info.event.title)
+  //             },
+  //             // dateClick:function (info){
+  //             //   console.log(calendar.getCurrentData().content)
+  //             // },
+  //             events:data
+  //         });
+  //         calendar.render();
+  //     });
+  //     request.fail(function (jqXHR, textStatus){
+  //         alert("Request failed"+textStatus);
+  //     });
+  // })
+
+  // 실시간 채팅 관련 script
+
+  var memberId = [[${memberDTO.memberName}]];
+  function enterRoom(socket){
+    // var enterMsg={"type" : "ENTER","roomId":[[${room.roomId}]],"sender":"tester","msg":""};
+    var enterMsg={"type" : "ENTER","roomId":[[${room.roomId}]],"sender":memberId,"msg":""};
+    socket.send(JSON.stringify(enterMsg));
+  }
+  let socket = new WebSocket("ws://localhost:8090/ws/chat");
+
+  socket.onopen = function (e) { // WebSocket 연결이 열렸을 때 이벤트
+    console.log('open server!')
+    enterRoom(socket);
+  };
+
+  socket.onclose=function(e){ // WebSocket 연결이 닫혔을 때 이벤트
+    console.log('disconnet');
+  }
+
+  socket.onerror = function (e){ // WebSocket 에러가 발생했을 때 이벤트
+    console.log(e);
+  }
+
+  socket.onmessage = function (e) { // 서버에서 메세지 수신했을 때 이벤트
+    console.log(e.data);
+    let msgArea = document.querySelector('.msgArea');
+    let newMsg = document.createElement('div');
+    let messageData = JSON.parse(e.data);
+
+    if (messageData.type === 'ENTER') { // 입장 메세지인 경우 (추가한 단락)
+      messageData.msg = messageData.sender + '님이 입장했습니다.';
+    } else if (messageData.type === 'QUIT') { // 퇴장 메세지인 경우
+      messageData.msg = messageData.sender + '님이 퇴장했습니다.';
+    }
+
+    let newParagraph = document.createElement('p'); // 사용자로부터 메세지를 받아오는 부분을 else문에 작성
+    newParagraph.className = 'message-text'; // 추가된 클래스
+
+    newParagraph.innerText = messageData.sender + '\n' + messageData.msg;
+    msgArea.append(newParagraph);
+
+    if (messageData.sender === memberId) {
+      newMsg.className = 'sent-message';
+    } else {
+      newMsg.className = 'received-message';
+    }
+  }
+
+  // 메세지 보내기 버튼 클릭 이벤트 수정
+  function sendMsg() {
+    let content = document.querySelector('.content').value;
+    console.log(content);
+    var talkMsg = { "type": "TALK", "roomId": [[${room.roomId}]], "sender": memberId, "msg": content };
+    if (content.trim() !== '') { // 보낼 메시지가 있는 경우에만 전송
+      socket.send(JSON.stringify(talkMsg));
+      // appendMessage("sent-message", "tester", content) // 새로운 메세지를 화면에 추가하는 함수 호출
+      console.log('after trim: '+content);
+    }
+  }
+
+  const messageInput = document.getElementById('messageInput');
+
+  // Enter 키 누르면 sendMessage 함수 호출
+  messageInput.addEventListener('keypress', function (e){
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMsg();
+    }
+  });
+
+  function quit(){
+    var quitMsg={"type" : "QUIT","roomId":[[${room.roomId}]] ,"sender":memberId,"msg":""};
+    socket.send(JSON.stringify(quitMsg));
+    socket.close();
+    location.href="/memberGroup/g_main?groupName="+groupName;
+    // var groupName = document.getElementsByClassName('groupName');
+  }
+</script>
+</body>
+</html>

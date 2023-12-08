@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/loginLayout.html}">
+<div id="loginorjoin" layout:fragment="content">
+    <h1 id="loginh1">LOGIN</h1>
+    <div class="card-body">
+        <th:block th:if="${param.logout != null}">
+            <h1>Logout........</h1>
+        </th:block>
+        <div th:if="${param.error}">
+            <p style="color:red;">로그인 실패. ID 또는 PW가 일치하지 않습니다.</p>
+        </div>
+
+        <form action="/memberGroup/login" th:method="post" th:if="${param.logout == null}">
+            <div id="loginText">
+                <p style="padding-bottom: 2px">
+                    <input type="text" name="username" id="username"required>
+                    <label for="username"><span id="idckText">ID</span></label>
+                </p>
+
+                <p style="padding-bottom: 2px">
+                    <input type="password" id="pw" name="password" required>
+                    <label for="pw"><span>PW</span></label>
+                </p>
+            </div>
+            <div>
+                <div>
+                    <button type="submit" id="loginBtn">LOGIN</button>
+                    <button type="submit" id="registerBtn">Sign Up</button>
+                </div>
+            </div>
+            <!--        <div class="input-group mb-3 ">-->
+            <!--            <input class="form-check-input" type="checkbox" name="remember-me">-->
+            <!--            <label class="form-check-label">-->
+            <!--                자동 로그인-->
+            <!--            </label>-->
+            <!--        </div>-->
+        </form>
+    </div>
+</div>
+<script layout:fragment="script" th:inline="javascript">
+    $(function () {
+        $("#loginorjoin").fadeIn(500, function () {
+            $(this).animate({
+                "top": "150px"
+            },1000);
+        });
+        $("#registerBtn").click(function () {
+            $("#loginorjoin").animate({
+                "opacity": "0",
+                "top": "10px"
+            },500, function () {
+                document.location.href = "/memberGroup/m_register";
+            });
+
+            return false;
+        });
+    });
+</script>
+
+</html>

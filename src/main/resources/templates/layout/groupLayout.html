@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+  <meta charset="UTF-8">
+  <title>layouttest</title>
+  <link th:rel="stylesheet" th:href="@{/css/groupLayout.css}">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="myPage">
+    <div class="logout">
+      <a href="/memberGroup/logout">로그아웃</a>
+    </div>
+    <div class="myPage_page">
+      <a th:href="@{/memberGroup/memberInfo}">마이페이지</a>
+    </div>
+    <div class="loginMember">
+      [[${memberDTO.memberId}]]
+    </div>
+  </div>
+  <div class="gmain_1">
+    <div class="g_logo">
+      <div class="con"><a th:href="@{/mainy}"><img src="/images/로고만.png" id="logoImage"></a></div>
+    </div>
+    <div class="g_info" layout:fragment="content">
+      그룹정보(그룹이름, 그룹창, 탈퇴/그룹 삭제 버튼)
+    </div>
+  </div>
+  <div class="gmain_2" layout:fragment="content2">
+    <div class="g_chat_list">
+      <div class="g_todo">그룹Todo</div>
+      <div class="g_chat">그룹Chat</div>
+    </div>
+    <div class="g_chat_inner">그룹캘린더/채팅/멤버리스트</div>
+  </div>
+</div>
+
+</body>
+<script layout:fragment="script" th:inline="javascript">
+
+
+</script>
+</html>

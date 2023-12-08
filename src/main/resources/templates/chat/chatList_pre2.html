@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-spring-springsecurity5"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/chatLayout.html}">
+
+<div class="c_main_2" layout:fragment="content2">
+  <div class="c_chat_list">
+    <!-- Button to trigger the modal -->
+    <button type="button" data-toggle="modal" data-target="#createRoomModal">
+      방 만들기
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="createRoomModal" tabindex="-1" role="dialog" aria-labelledby="createRoomModalLabel"
+         aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createRoomModalLabel">Create New Room</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="createRoomForm" action="/chat/createRoom" method="post">
+              <input type="text" name="name" placeholder="채팅방 이름">
+              <button type="submit">방 만들기</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table>
+      <tr th:each="room : ${roomList}">
+        <td>
+          <a th:href="@{/chat/chatRoom(roomId=${room.roomId})}" th:text="${room.name}"></a>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  </div>
+  <div class="c_chat_inner">채팅창</div>
+</div>
+
+
+</body>
+<!--<script layout:fragment="script" th:inline="javascript">-->
+<script th:inline="javascript">
+
+</script>
+</html>

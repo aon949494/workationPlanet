@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+
+  <link th:href="@{/css/chat_style.css}" rel="stylesheet"/>
+
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-box" id="chat-box">
+    <!-- 채팅 메시지들이 여기에 나타납니다 -->
+  </div>
+  <form class="input-group" id="chat-form" action="chat_ui_result" method="post">
+    <input type="text" name="user_text" id="message" placeholder="메시지를 입력하세요...">
+    <input type="submit" value="전송" id="send">
+  </form>
+</div>
+
+<script>
+  function displayCurrentTime(){
+    var currentTimeElement = document.getElementById("current-time");
+    var currentTime = new Date();
+    var hours = currentTime.getHours();
+    var minutes = currentTime.getMinutes();
+    var seconds = currentTime.getSeconds();
+
+    var timeString = hours + ":" + (minutes < 10 ? "0" : "") + minutes;
+    //  + ":" + (seconds < 10 ? "0" : "") + seconds;
+
+    var curTime = currentTimeElement.textContent = "현재 시간: " + timeString;
+
+    // 1초마다 현재 시간을 업데이트합니다.
+    setTimeout(displayCurrentTime, 1000);
+  }
+
+  // displayCurrentTime(); // 초기 호출
+
+
+  var chatBox = document.getElementById('chat-box');
+  var messageInput = document.getElementById('message');
+  var sendButton = document.getElementById('send');
+  var chatForm = document.getElementById('chat-form');
+  var user_name = "user";
+  var user_name2 = "user2";
+
+  sendButton.addEventListener('click', function() {
+    sendForm();
+    sendMessage();
+
+  });
+
+  messageInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      sendForm();
+      sendMessage();
+      e.preventDefault();
+    }
+  });
+
+  chatForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    sendForm();
+  });
+
+  function sendMessage() {
+    var message = messageInput.value;
+    if (message.trim() !== '') {
+      var myMessageDiv = document.createElement('div');
+      // myMessageDiv.textContent = message;
+      myMessageDiv.textContent = user_name + ": " + message;
+      // <br>curTiem;
+      myMessageDiv.className = 'message mine';
+      chatBox.appendChild(myMessageDiv);
+
+      messageInput.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }
+
+  function sendOtherMessage(message) {
+    var otherMessageDiv = document.createElement('div');
+    // otherMessageDiv.textContent = message;
+    otherMessageDiv.textContent = user_name2 + ": " + message;
+    // <br>curTime;
+    otherMessageDiv.className = 'message other';
+    chatBox.appendChild(otherMessageDiv);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+
+  function sendForm() {
+    var message = messageInput.value;
+
+    if (message.trim() === '') {
+      // alert("메시지를 입력하세요.");
+      return;
+    }
+    console.log("입력된 메시지: " + message);
+
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "chat_ui_result", true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        var jsonText = xhr.responseText;
+
+        // JSON 문자열을 객체로 변환
+        var data = JSON.parse(jsonText);
+
+        // JSON 객체의 내용을 콘솔에 출력
+        console.log(data);
+        sendOtherMessage(data.content);
+        // console.log("메시지 전송 성공");
+      } else {
+        console.log("메시지 전송 실패");
+      }
+    };
+    console.log(encodeURIComponent(message));
+
+    xhr.send("user_text=" + encodeURIComponent(message));
+  }
+</script>
+
+</body>
+</html>

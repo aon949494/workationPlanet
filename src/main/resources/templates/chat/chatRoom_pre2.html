@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/chatLayout.html}">
+
+<div class="c_main_2" layout:fragment="content2">
+  <div class="c_chat_list">
+    <div class="room-name">[[${room.name}]]</div>
+    <div class="user-list">채팅 유저 리스트</div>
+  </div>
+  <div class="c_chat_inner">
+    <h5>채팅창</h5>
+    <div class="message-container">
+      <input type="text" placeholder="보낼 메세지를 입력하세요." class="content" id="messageInput">
+      <button type="button" value="전송" class="sendBtn" onclick="sendMsg()">전송</button>
+      <button type="button" value="방나가기" class="quit" onclick="quit()">방 나가기 </button>
+      <div>
+        <span>메세지</span>
+        <div class="message-text"></div>
+        <div class="msgArea"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script layout:fragment="script" th:inline="javascript">
+  function enterRoom(socket){
+    var enterMsg={"type" : "ENTER","roomId":[[${room.roomId}]],"sender":"tester","msg":""};
+    socket.send(JSON.stringify(enterMsg));
+  }
+  let socket = new WebSocket("ws://localhost:8090/ws/chat");
+
+  socket.onopen = function (e) { // WebSocket 연결이 열렸을 때 이벤트
+    console.log('open server!')
+    enterRoom(socket);
+  };
+
+  socket.onclose=function(e){ // WebSocket 연결이 닫혔을 때 이벤트
+    console.log('disconnet');
+  }
+
+  socket.onerror = function (e){ // WebSocket 에러가 발생했을 때 이벤트
+    console.log(e);
+  }
+
+  socket.onmessage = function (e) { // 서버에서 메세지 수신했을 때 이벤트
+    console.log(e.data);
+    let msgArea = document.querySelector('.msgArea');
+    let newMsg = document.createElement('div');
+    let messageData = JSON.parse(e.data);
+
+    if (messageData.type === 'ENTER') { // 입장 메세지인 경우 (추가한 단락)
+      messageData.msg = messageData.sender + '님이 입장했습니다.';
+    } else if (messageData.type === 'QUIT') { // 퇴장 메세지인 경우
+      messageData.msg = messageData.sender + '님이 퇴장했습니다.';
+    }
+
+    let newParagraph = document.createElement('p'); // 사용자로부터 메세지를 받아오는 부분을 else문에 작성
+    newParagraph.className = 'message-text'; // 추가된 클래스
+
+    newParagraph.innerText = messageData.sender + '\n' + messageData.msg;
+    msgArea.append(newParagraph);
+
+    if (messageData.sender === 'tester') { // messageData.sender === ${memberId}
+      newMsg.className = 'sent-message';
+    } else {
+      newMsg.className = 'received-message';
+    }
+  }
+
+  // 메세지 보내기 버튼 클릭 이벤트 수정
+  function sendMsg() {
+    let content = document.querySelector('.content').value;
+    console.log(content);
+    var talkMsg = { "type": "TALK", "roomId": [[${room.roomId}]], "sender": "tester", "msg": content };
+    if (content.trim() !== '') { // 보낼 메시지가 있는 경우에만 전송
+      socket.send(JSON.stringify(talkMsg));
+      // appendMessage("sent-message", "tester", content) // 새로운 메세지를 화면에 추가하는 함수 호출
+      console.log('after trim: '+content);
+    }
+  }
+
+  const messageInput = document.getElementById('messageInput');
+
+  // Enter 키 누르면 sendMessage 함수 호출
+  messageInput.addEventListener('keypress', function (e){
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMsg();
+    }
+  });
+
+  function quit(){
+    var quitMsg={"type" : "QUIT","roomId":[[${room.roomId}]] ,"sender":"tester","msg":""};
+    socket.send(JSON.stringify(quitMsg));
+    socket.close();
+    location.href="/memberGroup/g_main";
+    // location.href = "/memberGroup/g_main?groupName=" + this.value + "&memberId=" + memberId;
+    // chatRoom을 g_main으로 옮기면 memberId 값 가져올 수 있음
+  }
+
+</script>
+
+</html>

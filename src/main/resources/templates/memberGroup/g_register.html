@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<div>
+    <h1>Register</h1>
+    <form action="/memberGroup/g_register" method="post">
+
+        <div>
+            <span>Group Name</span>
+            <input type="text" name="groupName" placeholder="Group Name">
+        </div>
+
+        <div>
+            <span>Group PW</span>
+            <input type="password" name="groupPw" placeholder="Group PW">
+        </div>
+
+        <div>
+            <span>Group Manager</span>
+            <input type="text" name="groupManager" placeholder="Group Manager">
+        </div>
+
+        <div>
+            <div>
+                <button type="submit">Submit</button> <!-- group list로 안 보내짐,, -->
+                <button type="reset">Reset</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+
+<script th:inline="javascript">
+    const errors= [[${errors}]]
+    let errorMsg=''
+    if(errors){
+        for(let i=0; i<errors.length; i++){
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code}`
+        }
+        alert(errorMsg)
+    }
+
+</script>
+</html>

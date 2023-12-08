@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>g_Register</title>
+</head>
+<body>
+<div>
+  <h1>Register</h1>
+  <form th:action="@{/todo/g_register}" th:method="post">
+    <div>
+      <input type="text" name="title" placeholder="title">
+    </div>
+    <div>
+      <input type="text" name="content" placeholder="content">
+    </div>
+    <div>
+      <input type="date" name="dueDate">
+    </div>
+    <div>
+      <input type="text" name="groupName" th:value="${groupName}" readonly>
+    </div>
+    <div>
+      <input type="text" name="memberId" th:value="${memberId}" readonly>
+    </div>
+    <div>
+      <button type="submit">Submit</button>
+      <button type="reset">Reset</button>
+    </div>
+  </form>
+</div>
+
+</body>

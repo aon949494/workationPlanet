@@ -1,0 +1,161 @@
+@charset "UTF-8";
+
+a{
+    color: black;
+}
+.wrap{
+    width: 1200px;
+    height: 850px;
+    /*background-color: aqua;*/
+    margin: 0 auto;
+}
+.myPage{
+    width: 1200px;
+    height: 30px;
+    float: right;
+}
+.loginMember{
+    width: 300px;
+    height: 30px;
+    float: right;
+    text-align: right;
+    padding-right: 30px;
+    box-sizing: border-box;
+}
+.myPage_page{
+    width: 100px;
+    height: 30px;
+    float: right;
+}
+.logout{
+    width: 70px;
+    height: 30px;
+    float: right;
+    margin-right: 50px;
+}
+.gmain_1{
+    width: 1200px;
+    height: 100px;
+    /*background-color: #EFFBFB;*/
+}
+.g_logo{
+    width: 200px;
+    height: 150px;
+    float: left;
+    background-color: #EFFBFB;
+}
+#logoImage{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+#logoName{
+    width: 500px;
+    height: 80px;
+    box-sizing: border-box;
+    margin-top: 40px;
+    margin-left: 250px;
+}
+.g_info{
+    width: 1000px;
+    height: 150px;
+    float: left;
+    background-color: #EFFBFB;
+}
+#groupName{
+    font-size: 20px;
+    /*text-align: center;*/
+}
+.gmain_2{
+    width: 1200px;
+    height: 700px;
+}
+.g_chat_list{
+    width: 200px;
+    height: 700px;
+    background-color: #EFFBFB;
+    float: left;
+}
+.g_todo{
+    width: 200px;
+    height: 15%;
+    /*background-color: darksalmon;*/
+    float: top;
+    padding: 15px 0 0 15px;
+    box-sizing: border-box;
+}
+.g_chat{
+    width: 200px;
+    height: 85%;
+    /*background-color: indianred;*/
+    float: top;
+    padding: 15px 0 0 15px;
+    box-sizing: border-box;
+}
+.g_chat_inner{
+    display: flex;
+    width: 1000px;
+    height: 700px;
+    background-color: white;
+    float: left;
+    border-width: 1px 0 0 1px; /* 위, 오른쪽, 아래, 왼쪽 테두리 두께 설정 */
+    border-style: solid;
+    border-color: black;
+    box-sizing: border-box;
+}
+.calendar{
+    width: 1000px;
+    height: 700px;
+    float: left;
+}
+.g_chat_con{
+    width: 70%;
+    height: 680px;
+    margin: 20px;
+    background-color: white;
+    /*background-color: #b6d4fe;*/
+}
+.g_user_list{
+    width: 30%;
+    height: 680px;
+    margin: 20px;
+    background-color: ghostwhite;
+}
+.g_list_name{
+    margin: 20px;
+}
+.chat_name{
+    /*height: 50px;*/
+    margin: 20px;
+    font-size: 20px;
+}
+.message-container {
+    max-width: 700px;
+    /*height: 650px;*/
+    margin: 20px;
+    background-color: white;
+    /*background-color: #e1ffe1;*/
+    overflow-y: auto; /* 수직 스크롤을 활성화하여 내용이 div를 벗어날 경우 스크롤바 표시 */
+    max-height: 580px; /* 최대 높이를 설정하여 내용이 해당 높이를 넘어가면 스크롤바가 나타나도록 설정 */
+}
+.message-input{
+
+}
+.message-window{
+    height: calc(100% - 40px);
+    padding-top: -40px;
+}
+.message-text {
+    margin: 5px 0;
+    padding: 10px;
+    /*background-color: #4CAF50;*/
+    background-color: lightseagreen;
+    color: white;
+    border-radius: 10px;
+    max-width: 70%;
+    word-wrap: break-word;
+    clear: both;
+    display: flex;
+    position: relative;
+    word-break: break-all; /* 긴 단어가 div를 벗어나는 것을 방지하기 위해 단어를 줄바꿈하도록 설정 */
+}

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>Schedule program</title>
+
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="/webjars/fullcalendar/5.6.0/main.css" />
+    <script src="/webjars/fullcalendar/5.6.0/main.js"></script>
+</head>
+<body>
+<div id="wrapper">
+    <!--<div layout:fragment="content">-->
+    <div id="header">
+        <!--<div layout:fragment="header">-->
+        <div id="logo">
+            <a href="#!">Schedule</a>
+        </div>
+        <div id="menu">
+            <ul class="nav">
+                <!--                <li><a href="#!">Chat</a></li>-->
+                <li>
+                    <a th:href="@{/chat/chat}">Chat</a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <!--                        <a href="#!">LOGIN</a>-->
+                        <a th:href="@{/memberGroup/login}">LOGIN</a>
+                        <a href="#!">MyInfo</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#!">Something else here</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- nav 태그로 감싸줘야 하나? -->
+
+        <div id="contents" layout:fragment="content">
+            <div id="left">
+                <h2>Group List</h2>
+                <ul>
+                    <li th:each="dtoList:${list}">
+                        <a th:href="@{/memberGroup/g_read(groupName=${dtoList.groupName})}">[[${dtoList.groupName}]]</a>
+                        [[${dtoList.groupManager}]]
+                    </li>
+                </ul>
+                <div>
+                    <a th:href="|@{/memberGroup/g_register}|">
+                        <button type="button">Register</button>
+                    </a>
+                </div>
+            </div>
+            <div id="center">
+                <h2>Calendar</h2>
+                <div id="calendar"></div>
+            </div>
+            <div id="right">
+                <h2>Todo List</h2>
+                <ul>
+                    <li th:each="dtoList:${list}">
+                        [[${dtoList.lno}]]
+                        <input type="checkbox" th:checked="${dtoList.isFinished}"/>
+                        <a th:href="@{/todo/read(lno=${dtoList.lno})}">[[${dtoList.title}]]</a>
+                        [[${dtoList.dueDate}]]
+                        [[${dtoList.writer}]]
+                        [[${dtoList.content}]]
+                        [[${dtoList.regDate}]]
+                        [[${dtoList.groupName}]]
+                    </li>
+                </ul>
+                <div>
+                    <a th:href="|@{/todo/register}|">
+                        <button type="button">Register</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            events: [
+                // todolist 동적 로드/thymeleaf로 데이터 전달
+                { title: '11월', start: '2023-11-01' },
+                // 예: { title: '이벤트 2', start: '2023-11-15', end: '2023-11-17' },
+            ]
+        });
+        calendar.render();
+    });
+</script>
+<!--<script th:src="@{/js/scripts.js}"></script>-->
+<!--<th:block layout:fragment="script">-->
+
+<!--</th:block>-->
+</body>
+</html>

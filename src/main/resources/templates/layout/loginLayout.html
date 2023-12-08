@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>Workation Planet</title>
+</head>
+<link th:rel="stylesheet" th:href="@{/css/loginLayout.css}">
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<body>
+<div id="wrap">
+  <div id="left">
+    <img src="/images/logo.png" style="width: 390px;height: 300px;margin-top: 150px">
+  </div>
+  <div id="right">
+    <div id="loginorjoin" layout:fragment="content">로그인화면이나 회원가입화면</div>
+  </div>
+</div>
+<script layout:fragment="script" th:inline="javascript">
+
+
+</script>
+
+</body>
+</html>

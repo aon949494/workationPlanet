@@ -1,0 +1,296 @@
+<!-- chatRoom 백업 -- 231206 -->
+
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/groupLayout.html}">
+
+<div class="g_info" layout:fragment="content">
+  <img src="/images/logoname.png" id="logoName">
+  <!--    <form action="/memberGroup/g_delete" method="post">-->
+  <!--        &lt;!&ndash;        <span id="groupName" th:name="${groupName}">[[${groupName}]]</span>&ndash;&gt;-->
+  <!--        <span id="groupName" th:text="${groupName != null} ? ${groupName} : 'Default Value'"></span>-->
+  <!--    </form>-->
+  <!--    <button type="button" id="g_deleteBtn">그룹삭제</button>-->
+</div>
+
+<div class="gmain_2" layout:fragment="content2">
+  <div class="g_chat_list">
+    <div class="g_todo">
+      <form action="/memberGroup/g_delete" method="post">
+        <!--        <span id="groupName" th:name="${groupName}">[[${groupName}]]</span>-->
+        <span id="groupName" th:text="${groupName != null} ? ${groupName} : 'Default Value'"></span>
+      </form>
+      <br>
+      <button type="button" id="g_deleteBtn">그룹삭제</button>
+
+      <input type="button" value="그룹todo" id="g_todoBtn">
+    </div>
+    <div class="g_chat">
+
+      <!--채팅방 생성-->
+      <button id="createRoom">채팅방 생성</button>
+
+      <form id="createRoomForm" th:action="@{/chat/createRoom(groupName=${groupName})}" method="post"> <!--style="display: none;" 생략-->
+        <input type="text" name="name" placeholder="채팅방 이름">
+        <button type="submit" class="btn btn-primary">방 만들기</button>
+      </form>
+
+      <!--채팅리스트-->
+      <br>
+      <button id="chatList">채팅방 목록</button>
+
+      <table id="tblChatList" style="display: none;">
+        <!--            <table id="tblChatList">-->
+        <tr th:each="room : ${roomList}">
+          <td>
+            <span class="roomGroupName" th:text="${room.groupName}" style="display: none;"></span>
+            <span class="roomName" th:text="${room.name}" style="display: none;"></span>
+            <span class="roomId" th:text="${room.roomId}" style="display: none;"></span>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="g_chat_inner">
+    <div class="g_chat_con"> <!--style 추가-->
+      <div class="chat_name"><h3>[[${room.name}]]</h3></div> <!--style 추가-->
+      <div class="message-container"> <!--class.chat-container-->
+        <input type="text" placeholder="보낼 메세지를 입력하세요." class="content" id="messageInput"> <!--id. message-->
+        <button type="button" value="전송" class="sendBtn" onclick="sendMsg()">전송</button> <!--id. send-->
+        <button type="button" value="방나가기" class="quit" onclick="quit()">방 나가기 </button>
+        <div>
+          <span>메세지</span>
+          <div class="message-text"></div>
+          <div class="msgArea"></div> <!--class, id.chat-box-->
+        </div>
+      </div>
+    </div>
+    <div class="g_user_list">
+      <div class="g_list_name"><h3>[[${room.name}]]<br>접속 중인 사용자</h3></div>
+      <!-- 채팅방 접속 중인 사용자 목룍 표시 -->
+      <ul class="user-list"></ul>
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+  // 그룹별로 채팅방 조회
+  var roomGroupNames = document.getElementsByClassName("roomGroupName");
+  var roomName = document.getElementsByClassName("roomName");
+  var roomId = document.getElementsByClassName("roomId");
+  var groupNameElement = document.getElementById("groupName");
+  var groupName = groupNameElement ? groupNameElement.textContent.trim() : null;
+
+  document.getElementById("chatList").addEventListener("click", function(){
+    console.log("chatListBtn Click...");
+
+    var roomInfoAll = {}; // room 정보를 담는 dict (key: roomId, value: [roomGroupName, roomName])
+
+    for(var i = 0; i < roomGroupNames.length; i++){
+      var roomGroupName = roomGroupNames[i].textContent.trim();
+      var currentRoomName = roomName[i].textContent.trim();
+      var currentRoomId = roomId[i].textContent.trim();
+      console.log("currentRoomName: "+currentRoomName+", currentRoomId: "+currentRoomId);
+      roomInfoAll[currentRoomId] = [roomGroupName, currentRoomName];
+    }
+
+    var newChatList = document.getElementById("tblChatList"); // ul 요소를 가져옴
+    newChatList.innerHTML = ""; // Clear previous list items
+
+    if(newChatList.style.display == "none"){
+      console.log("if) style none...");
+      for(var roomIdValue in roomInfoAll){
+        var roomInfo = roomInfoAll[roomIdValue];
+        var roomGroupName = roomInfo[0];
+        var room = roomInfo[1];
+        console.log("roomgroupName: "+roomGroupName+", roomName: "+room);
+
+        if(roomGroupName === groupName){
+          console.log("if) roomGroupName === groupName...");
+        }
+        var listItem = document.createElement("li"); // 새로운 list item 생성
+        var anchorTag = document.createElement("a"); // 새로운 <a> 태그 생성
+        anchorTag.setAttribute("href", "/chat/chatRoom?roomId=" + roomIdValue + "&groupName=" + groupName); // 링크 설정
+        anchorTag.textContent = room; // <a> 태그에 생성되는 text 설정
+        listItem.appendChild(anchorTag); // list에 <a> 태그 추가
+        newChatList.appendChild(listItem); // ul에 list item 추가
+      }
+    }
+    newChatList.style.display = "block"; // 채팅 리스트를 보여줌
+  });
+
+
+  // 실시간 채팅 관련 script
+  let usersInRoom = []; // 채팅 방에 접속 중인 사용자 리스트
+  var memberName = [[${memberDTO.memberName}]];
+
+  // 사용자 리스트 업데이트 함수
+  function updateUserList(){
+    let userList = document.querySelector('.user-list');
+    userList.innerHTML = ''; // 사용자 목록 초기화
+
+    // 채팅방에 있는 사람들을 화면에 표시
+    usersInRoom.forEach(user => {
+      let listItem = document.createElement('li');
+      listItem.textContent = user;
+      userList.appendChild(listItem);
+    });
+  }
+
+  function enterRoom(socket){
+    var enterMsg={"type" : "ENTER","roomId":[[${room.roomId}]],"sender":memberName,"msg":""};
+    socket.send(JSON.stringify(enterMsg));
+    usersInRoom.push(memberName); // 채팅방에 들어온 사용자
+    updateUserList(); // 사용자 리스트 업데이트 함수
+  }
+
+  let socket = new WebSocket("ws://localhost:8090/ws/chat");
+
+  socket.onopen = function (e) { // WebSocket 연결이 열렸을 때 이벤트
+    console.log('open server!')
+    enterRoom(socket);
+  };
+
+  socket.onclose=function(e){ // WebSocket 연결이 닫혔을 때 이벤트
+    console.log('disconnet');
+  }
+
+  socket.onerror = function (e){ // WebSocket 에러가 발생했을 때 이벤트
+    console.log(e);
+  }
+
+  socket.onmessage = function (e) { // 서버에서 메세지 수신했을 때 이벤트
+    console.log(e.data);
+
+    // 메세지 보내기
+    let msgArea = document.querySelector('.msgArea');
+    let newMsg = document.createElement('div');
+    let messageData = JSON.parse(e.data);
+
+    // 사용자 이미지 추가
+    var userImage = document.createElement('img');
+    userImage.src = '/images/user_img_basic.png'; // 이미지 크기, 모양 다듬기 // 팝업으로 뜨도록 수정
+    userImage.className = 'user-image';
+    // 이미지 스타일 설정
+    userImage.style.borderRadius = '50%'; // 이미지를 원 모양으로 설정
+    userImage.style.width = '45px';
+    userImage.style.height = '45px';
+    msgArea.appendChild(userImage);
+
+    if (messageData.type === 'ENTER') { // 입장 메세지인 경우 (추가한 단락)
+      messageData.msg = messageData.sender + '님이 입장했습니다.';
+    } else if (messageData.type === 'QUIT') { // 퇴장 메세지인 경우
+      messageData.msg = messageData.sender + '님이 퇴장했습니다.';
+    }
+
+    let newParagraph = document.createElement('p'); // 사용자로부터 메세지를 받아오는 부분을 else문에 작성
+    newParagraph.className = 'message-text'; // 추가된 클래스
+
+    newParagraph.innerText = messageData.sender + '\n' + messageData.msg;
+    msgArea.append(newParagraph);
+
+    if (messageData.sender === memberName) {
+      newMsg.className = 'sent-message';
+    } else {
+      newMsg.className = 'received-message';
+    }
+
+    // // 사용자 이미지 추가
+    // var userImage = document.createElement('img');
+    // userImage.src = '/images/user_img_basic.png'; // 이미지 크기, 모양 다듬기 // 팝업으로 뜨도록 수정
+    // userImage.className = 'user-image';
+    // // 이미지 스타일 설정
+    // userImage.style.borderRadius = '50%'; // 이미지를 원 모양으로 설정
+    // userImage.style.width = '45px';
+    // userImage.style.height = '45px';
+    // msgArea.appendChild(userImage);
+
+
+    // 메세지 info, 날짜-시간 설정
+    var messageDiv = document.createElement('div');
+    messageDiv.textContent = content;
+    messageDiv.className = 'message mine';
+
+    var messageInfo = document.createElement('div');
+    messageInfo.className = 'message-info';
+
+    // 현재 날짜를 가져오고, 날짜가 변경된 경우에만 날짜(연/월/일)를 표시
+    var newDate = getCurrentDate();
+    if (newDate !== currentDate) {
+      messageInfo.textContent = newDate;
+      currentDate = newDate; // 말풍선 밖에 날짜가 나타나도록 설정 수정
+    }
+
+    var timeSpan = document.createElement('span');
+    timeSpan.textContent = getCurrentTime();
+    messageInfo.appendChild(timeSpan);
+    // 시간을 오른쪽 정렬하고 글자 크기를 20px로 설정
+    messageInfo.style.textAlign = 'right'; // 오른쪽 정렬
+    messageInfo.style.fontSize = '13px'; // 글자 크기 13px로 설정
+
+    messageDiv.appendChild(messageInfo);
+    newMsg.appendChild(msgArea);
+    newMsg.appendChild(messageDiv);
+
+    chatBox.appendChild(newMsg);
+  }
+
+  // 메세지 보내기 버튼 클릭 이벤트 수정
+
+  let content = document.querySelector('.content').value;
+  function sendMsg() {
+    // let content = document.querySelector('.content').value;
+    console.log(content);
+    var talkMsg = { "type": "TALK", "roomId": [[${room.roomId}]], "sender": memberName, "msg": content };
+    if (content.trim() !== '') { // 보낼 메시지가 있는 경우에만 전송
+      socket.send(JSON.stringify(talkMsg));
+      // appendMessage("sent-message", "tester", content) // 새로운 메세지를 화면에 추가하는 함수 호출
+      console.log('after trim: '+content);
+
+      messageInput.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }
+
+  // 년/월/일
+  function getCurrentDate() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함
+    var day = now.getDate();
+    return year + '/' + (month < 10 ? '0' : '') + month + '/' + (day < 10 ? '0' : '') + day;
+  }
+
+  // 현재 시간을 문자열로 반환
+  function getCurrentTime() {
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+  }
+
+  const messageInput = document.getElementById('messageInput');
+
+  // Enter 키 누르면 sendMessage 함수 호출
+  messageInput.addEventListener('keypress', function (e){
+    if(e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMsg();
+    }
+  });
+
+  function quit(){
+    var quitMsg={"type" : "QUIT","roomId":[[${room.roomId}]] ,"sender":memberName,"msg":""};
+    socket.send(JSON.stringify(quitMsg));
+    socket.close();
+    usersInRoom = usersInRoom.filter(user => user !== memberName); // 방 나감
+    updateUserList(); // 사용자 리스트 업데이트
+    location.href="/memberGroup/g_main?groupName="+groupName;
+  }
+</script>
+</body>
+</html>

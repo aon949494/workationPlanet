@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <div id="contents">
+        <div id="left">
+            <h2>Member List</h2>
+            <ul>
+                <li th:each="dtoList:${list}">
+                    <a th:href="|@{/chat/chat}|">[[${dtoList.memberId}]]</a>
+<!--                    [[${dtoList.memberId}]]-->
+                </li>
+            </ul>
+            <div>
+<!--                <a th:href="|@{/chat/chat}|">-->
+<!--                    <button type="button">Chat</button>-->
+<!--                </a>-->
+            </div>
+        </div>
+        <div id="center">
+            <h2>Calendar</h2>
+            <div id="calendar"></div>
+        </div>
+        <div id="right">
+            <h2>Todo List</h2>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en" xmlns:th="http://www.thymeleaf.org">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Member List</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>Member List</h1>-->
+<!--&lt;!&ndash;<table>&ndash;&gt;-->
+<!--&lt;!&ndash;    <thead>&ndash;&gt;-->
+<!--&lt;!&ndash;    <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>ID</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Name</th>&ndash;&gt;-->
+<!--&lt;!&ndash;        <th>Affiliation</th>&ndash;&gt;-->
+<!--&lt;!&ndash;    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;    </thead>&ndash;&gt;-->
+<!--&lt;!&ndash;    <tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;    <tr th:each="dtoList : ${list}">&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${dtoList.memberId}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${dtoList.memberName}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;        <td th:text="${dtoList.affiliation}"></td>&ndash;&gt;-->
+<!--&lt;!&ndash;    </tr>&ndash;&gt;-->
+<!--&lt;!&ndash;    </tbody>&ndash;&gt;-->
+<!--&lt;!&ndash;</table>&ndash;&gt;-->
+<!--</body>-->
+<!--</html>-->

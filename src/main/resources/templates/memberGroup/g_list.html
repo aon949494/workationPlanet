@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <div id="contents">
+        <div id="left">
+            <h2>Group List</h2>
+            <ul>
+                <li th:each="dtoList:${list}">
+                    <a th:href="@{/memberGroup/g_read(groupName=${dtoList.groupName})}">[[${dtoList.groupName}]]</a>
+                    [[${dtoList.groupManager}]]
+                </li>
+            </ul>
+            <div>
+                <a th:href="|@{/memberGroup/g_register}|">
+                    <button type="button">Register</button>
+                </a>
+            </div>
+        </div>
+        <div id="center">
+            <h2>Calendar</h2>
+            <div id="calendar"></div>
+        </div>
+        <div id="right">
+            <h2>Todo List</h2>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

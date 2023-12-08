@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<!--<html lang="en">-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat</title>
+
+  <link th:href="@{/css/chat_style.css}" rel="stylesheet"/>
+
+</head>
+<body>
+
+<div class="chat-container">
+  <div class="chat-box" id="chat-box">
+    <!-- 채팅 메시지들이 여기에 나타납니다 -->
+  </div>
+  <form class="input-group" id="chat-form" action="chat" method="post">
+    <input type="text" name="user_text" id="message" placeholder="메시지를 입력하세요...">
+    <input type="submit" value="전송" id="send">
+  </form>
+</div>
+
+<script>
+  // displayCurrentTime(); // 초기 호출
+  var chatBox = document.getElementById('chat-box');
+  var messageInput = document.getElementById('message');
+  var sendButton = document.getElementById('send');
+  var chatForm = document.getElementById('chat-form');
+  var user_name = "user"; // 사용자 이름
+  // var user_name2 = "user2"; // 상대방 이름
+  var currentDate = null; // 현재 날짜 추적
+
+  sendButton.addEventListener('click', function() {
+    // readDate();
+    sendMessage();
+  });
+
+  messageInput.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      // readDate();
+      sendMessage();
+      e.preventDefault();
+    }
+  });
+
+  chatForm.addEventListener('submit', function(e) {
+    // readDate();
+    sendMessage();
+    e.preventDefault();
+  });
+
+  // function readDate(){
+  //   // 현재 날짜를 가져오고, 날짜가 변경된 경우에만 날짜(연/월/일)를 표시
+  //   var newDate = getCurrentDate();
+  //   if (newDate !== currentDate) {
+  //     messageInfo.textContent = newDate;
+  //     currentDate = newDate; // 말풍선 밖에 날짜가 나타나도록 설정 수정
+  //   }
+  // }
+
+  function sendMessage() {
+    var message = messageInput.value;
+    if (message.trim() !== '') {
+      var messageContainer = document.createElement('div');
+      messageContainer.className = 'message-container';
+
+      var userInfo = document.createElement('div');
+      userInfo.className = 'user-info';
+
+      var userImage = document.createElement('img');
+      userImage.src = '/images/user_img.jpg'; // 이미지 크기, 모양 다듬기 // 팝업으로 뜨도록 수정
+      userImage.className = 'user-image';
+      // 이미지 스타일 설정
+      userImage.style.borderRadius = '50%'; // 이미지를 원 모양으로 설정
+      userImage.style.width = '45px';
+      userImage.style.height = '45px';
+      userInfo.appendChild(userImage);
+
+      var userName = document.createElement('span');
+      userName.textContent = user_name;
+      userInfo.appendChild(userName);
+
+      var messageDiv = document.createElement('div');
+      messageDiv.textContent = message;
+      messageDiv.className = 'message mine';
+
+      var messageInfo = document.createElement('div');
+      messageInfo.className = 'message-info';
+
+      // 현재 날짜를 가져오고, 날짜가 변경된 경우에만 날짜(연/월/일)를 표시
+      var newDate = getCurrentDate();
+      if (newDate !== currentDate) {
+        messageInfo.textContent = newDate;
+        currentDate = newDate; // 말풍선 밖에 날짜가 나타나도록 설정 수정
+      }
+
+      var timeSpan = document.createElement('span');
+      timeSpan.textContent = getCurrentTime();
+      messageInfo.appendChild(timeSpan);
+      // 시간을 오른쪽 정렬하고 글자 크기를 20px로 설정
+      messageInfo.style.textAlign = 'right'; // 오른쪽 정렬
+      messageInfo.style.fontSize = '13px'; // 글자 크기 13px로 설정
+
+      messageDiv.appendChild(messageInfo);
+      messageContainer.appendChild(userInfo);
+      messageContainer.appendChild(messageDiv);
+
+      chatBox.appendChild(messageContainer);
+
+      messageInput.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }
+
+  // 년/월/일
+  function getCurrentDate() {
+    var now = new Date();
+    var year = now.getFullYear();
+    var month = now.getMonth() + 1; // 월은 0부터 시작하므로 1을 더함
+    var day = now.getDate();
+    return year + '/' + (month < 10 ? '0' : '') + month + '/' + (day < 10 ? '0' : '') + day;
+  }
+
+  // 현재 시간을 문자열로 반환
+  function getCurrentTime() {
+    var now = new Date();
+    var hours = now.getHours();
+    var minutes = now.getMinutes();
+    return (hours < 10 ? '0' : '') + hours + ':' + (minutes < 10 ? '0' : '') + minutes;
+  }
+
+  // function sendOtherMessage(message) { // 챗봇 응답 가져오는 코드
+  //   var otherMessageDiv = document.createElement('div');
+  //   otherMessageDiv.textContent = user_name2 + ": " + message;
+  //   // <br>curTime;
+  //   otherMessageDiv.className = 'message other';
+  //   chatBox.appendChild(otherMessageDiv);
+  //
+  //   chatBox.scrollTop = chatBox.scrollHeight;
+  // }
+
+</script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.4.0/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="/js/main.js"></script>
+
+</body>
+</html>

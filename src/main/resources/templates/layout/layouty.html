@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+  <meta charset="UTF-8">
+  <title>layouttest</title>
+  <link th:rel="stylesheet" th:href="@{/css/layout.css}">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+<div class="wrap">
+  <div class="myPage">
+    <div class="logout">
+      <a href="/memberGroup/logout">로그아웃</a>
+    </div>
+    <div class="myPage_page">
+      <a th:href="@{/memberGroup/memberInfo}">마이페이지</a>
+    </div>
+    <div class="loginMember">
+      [[${memberDTO.memberId}]]
+    </div>
+  </div>
+  <div class="main_1">
+    <div class="main_1_1">
+      <a th:href="@{/mainy}"><img src="/images/로고만.png" id="logoImage"></a>
+    </div>
+    <div class="test">
+      <div class="main_1_3" layout:fragment="content3">
+        <input type="button" value="개인일정" id="personal" name="tab_item"><br>
+      </div>
+      <div class="main_1_2" layout:fragment="content2">
+
+      </div>
+    </div>
+
+  </div>
+  <div class="main" layout:fragment="content">
+
+  </div>
+</div>
+
+</body>
+<script layout:fragment="script" th:inline="javascript">
+
+
+</script>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/groupLayout.html}">
+
+<div class="g_info" layout:fragment="content">
+  <img src="/images/logoname.png" id="logoName">
+  <!--    <form action="/memberGroup/g_delete" method="post">-->
+  <!--        <span id="groupName" th:name="${groupName}"><b>[[${groupName}]]</b></span>-->
+  <!--    </form>-->
+  <!--    <button type="button" id="g_deleteBtn">-->
+
+  <!--    </button>-->
+</div>
+
+<div class="gmain_2" layout:fragment="content2">
+  <div class="g_chat_list">
+    <div class="g_todo">
+      <form action="/memberGroup/g_delete" method="post">
+        <span id="groupName" th:name="${groupName}"><b>[[${groupName}]]</b></span>
+      </form>
+      <br>
+      <button type="button" id="g_deleteBtn">
+
+      </button>
+
+      <input type="button" value="그룹todo" id="g_todoBtn">
+    </div>
+    <div class="g_chat">
+
+      <!--채팅방 생성-->
+      <h3 id="createRoom">채팅방 생성</h3>
+
+      <form id="createRoomForm" th:action="@{/chat/createRoom(groupName=${groupName})}" method="post">
+        <input type="text" name="name" placeholder="채팅방 이름" required>
+        <button type="submit" class="btn btn-primary">방 만들기</button>
+      </form>
+
+      <!--채팅리스트-->
+      <br>
+      <button id="chatList">채팅방 목록</button>
+
+      <table id="tblChatList" style="display: none;">
+        <!--            <table id="tblChatList">-->
+        <tr th:each="room : ${roomList}">
+          <td>
+            <span class="roomGroupName" th:text="${room.groupName}" style="display: none;"></span>
+            <span class="roomName" th:text="${room.name}" style="display: none;"></span>
+            <span class="roomId" th:text="${room.roomId}" style="display: none;"></span>
+            <a th:href="@{/chat/chatRoom(roomId=${room.roomId},groupName=${groupName})}" th:text="${room.name}"></a>
+          </td>
+        </tr>
+      </table>
+
+    </div>
+  </div>
+
+  <div class="g_chat_inner">
+    <div class="calendar" id="cal">
+
+    </div>
+  </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+  // 그룹별로 채팅방 조회
+  var roomGroupNames = document.getElementsByClassName("roomGroupName");
+  var roomName = document.getElementsByClassName("roomName");
+  var roomId = document.getElementsByClassName("roomId");
+  var groupNameElement = document.getElementById("groupName");
+  var groupName = groupNameElement ? groupNameElement.textContent.trim() : null;
+
+  document.getElementById("chatList").addEventListener("click", function(){
+    console.log("chatListBtn Click...");
+    console.log("roomGroupNames>> "+roomGroupNames);
+
+    var roomInfoAll = {}; // room 정보를 담는 dict (key: roomId, value: [roomGroupName, roomName])
+
+    for(var i = 0; i < roomGroupNames.length; i++){
+      console.log("첫 번째 for문 입장...")
+      var roomGroupName = roomGroupNames[i].textContent.trim();
+      var currentRoomName = roomName[i].textContent.trim();
+      var currentRoomId = roomId[i].textContent.trim();
+      console.log("roomGroupName>> "+roomGroupName);
+      console.log("currentRoomName: "+currentRoomName+", currentRoomId: "+currentRoomId);
+      roomInfoAll[currentRoomId] = [roomGroupName, currentRoomName];
+    }
+
+    var newChatList = document.getElementById("tblChatList"); // ul 요소를 가져옴
+    newChatList.innerHTML = ""; // Clear previous list items
+
+    if(newChatList.style.display == "none"){
+      console.log("if) style none...");
+      for(var roomIdValue in roomInfoAll){
+        console.log("두 번째 for문 입장...");
+        var roomInfo = roomInfoAll[roomIdValue];
+        var roomGroupName = roomInfo[0];
+        var room = roomInfo[1];
+        console.log("roomgroupName: "+roomGroupName+", roomName: "+room);
+
+        if(roomGroupName === groupName){
+          console.log("if) roomGroupName === groupName...");
+        }
+        var listItem = document.createElement("li"); // 새로운 list item 생성
+        var anchorTag = document.createElement("a"); // 새로운 <a> 태그 생성
+        anchorTag.setAttribute("href", "/chat/chatRoom?roomId=" + roomIdValue + "&groupName=" + groupName); // 링크 설정
+        anchorTag.textContent = room; // <a> 태그에 생성되는 text 설정
+        listItem.appendChild(anchorTag); // list에 <a> 태그 추가
+        newChatList.appendChild(listItem); // ul에 list item 추가
+      }
+      console.log("두 번째 for문 끝...");
+      // else {
+      //     alert("No rooms available for the selected group.");
+      // }
+    }
+    newChatList.style.display = "block"; // 채팅 리스트를 보여줌
+    // }else{
+    //     newChatList.style.display = "none";
+    // }
+
+  });
+
+
+  // 일정 관련 script
+  var actionForm = $("form");
+  resultm = [[${resultm}]]
+  console.log(resultm)
+  var g_deleteBtn = document.getElementById('g_deleteBtn');
+  if(resultm==="groupManager"){
+    g_deleteBtn.innerText="그룹삭제"
+    $("#g_deleteBtn").click(function (){
+      var groupName = [[${groupName}]];
+      const url = "/memberGroup/g_delete?groupName="+groupName
+      if(!confirm("그룹을 삭제하시겠습니까?")){
+        return
+      }
+      actionForm.attr("action","/memberGroup/g_delete?groupName="+groupName).attr("method","post").submit();
+    })
+  }
+  else{
+    g_deleteBtn.innerText="그룹탈퇴"
+    $("#g_deleteBtn").click(function (){
+      var groupName = [[${groupName}]];
+      const url = "/memberGroup/GroupMemberDelete?groupName="+groupName
+      if(!confirm("그룹을 탈퇴하시겠습니까?")){
+        return
+      }
+      actionForm.attr("action",url).attr("method","post").submit();
+
+    })
+  }
+  $("#g_todoBtn").click(function (){
+    var groupName = [[${groupName}]];
+    const url = "/todo/plan?groupName="+groupName
+    $(function (){
+      var request = $.ajax({
+        url:url,
+        method:"GET",
+        dataType:"json"
+      });
+      request.done(function (data){
+        var calendarEl = document.getElementById('cal');
+
+        var calendar = new FullCalendar.Calendar(calendarEl,{
+          initialView: 'dayGridMonth',
+          headerToolbar:{
+            left:'prev,next today',
+            center:'title',
+            right:'dayGridMonth,timeGridWeek,timeGridDay'
+          },
+          eventClick: function (data) {
+            $("#isFinished").ready(function (){
+              if($("#isFinished").val()==='true'){
+                $("#isFinished").attr('checked',true)
+
+              }
+              else{$("#isFinished").attr('checked',false)}
+            })
+            Swal.fire({
+              title : data.event.startStr,
+              html: "title : " + data.event.title + '<br>' +
+                      "content : " + data.event.extendedProps.subtitle + '<br>' +
+                      '<input type="checkbox" id="isFinished" disabled name="isFinished"  onclick="if(this.checked){this.value=true;}else {this.value=false}" value='+data.event.extendedProps.finished+' ><br>' +
+                      '<style>[type="checkbox"]{\n' +
+                      '    appearance: none;\n' +
+                      '    position: relative;\n' +
+                      '    border: max(2px,0.1em) solid gray;\n' +
+                      '    border-radius: 1.25em;\n' +
+                      '    width: 2.25em;\n' +
+                      '    height: 1.25em;\n' +
+                      '}\n' +
+                      '[type="checkbox"]::before{\n' +
+                      '    content:"";\n' +
+                      '    position: absolute;\n' +
+                      '    left: 0;\n' +
+                      '    width: 1em;\n' +
+                      '    height: 1em;\n' +
+                      '    border-radius: 50%;\n' +
+                      '    transform: scale(0.8);\n' +
+                      '    background-color: gray;\n' +
+                      '    transition: left 250ms linear;\n' +
+                      '}\n' +
+                      '[type="checkbox"]:checked::before{\n' +
+                      '    background-color: wheat;\n' +
+                      '    left: 1em;\n' +
+                      '}\n' +
+                      '[type="checkbox"]:checked{\n' +
+                      '    background-color: tomato;\n' +
+                      '    border-color: tomato;\n' +
+                      '}\n' +
+                      '[type="checkbox"]:disabled{\n' +
+                      '    border-color: tomato;\n' +
+                      '    opacity: 0.7;\n' +
+                      '    cursor: not-allowed;\n' +
+                      '}\n' +
+                      '[type="checkbox"]:disabled:before{\n' +
+                      '    background-color: wheat;\n' +
+                      '}</style>',
+
+              showCancelButton:true,
+              showDenyButton : true,
+              confirmButtonColor:'#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText:"수정",
+              denyButtonText:"삭제",
+              cancelButtonText:"확인",
+            }).then((result)=>{
+              $("#isFinished").ready(function (){
+                if($("#isFinished").val()==='true'){
+                  $("#isFinished").attr('checked',true)
+                }
+                else{$("#isFinished").attr('checked',false)}
+              })
+              if(result.isConfirmed){
+                Swal.fire({
+                  title: data.event.startStr,
+                  html: 'TITLE<input type="text" id="title" name="title" value=' + data.event.title + '><br>' +
+                          'CONTENT<input type="text" id="content" name="content" value=' + data.event.extendedProps.subtitle + '><br>' +
+                          'FINISHED<input type="checkbox" id="isFinished" name="isFinished"  onclick="if(this.checked){this.value=true;}else {this.value=false}" value='+data.event.extendedProps.finished+' ><br>' +
+                          '<input type="hidden" id="writer" name="writer" value=' + data.event.extendedProps.memberId + '>' +
+                          '<input type="hidden" id="dueDate" value='+data.event.startStr+'>' +
+                          '<input type="hidden" id="regDate" value='+data.event.extendedProps.regDate+'>' +
+                          '<input type="hidden" id="modDate" value='+data.event.extendedProps.modDate+'>' +
+                          '<input type="hidden" id="lno" value='+data.event.extendedProps.glno+'>' +
+                          '<input type="hidden" id="groupName" value='+groupName+'>'+
+                          '<style>' +
+                          '[type="checkbox"]{\n' +
+                          '    appearance: none;\n' +
+                          '    position: relative;\n' +
+                          '    border: max(2px,0.1em) solid gray;\n' +
+                          '    border-radius: 1.25em;\n' +
+                          '    width: 2.25em;\n' +
+                          '    height: 1.25em;\n' +
+                          '}\n' +
+                          '[type="checkbox"]::before{\n' +
+                          '    content:"";\n' +
+                          '    position: absolute;\n' +
+                          '    left: 0;\n' +
+                          '    width: 1em;\n' +
+                          '    height: 1em;\n' +
+                          '    border-radius: 50%;\n' +
+                          '    transform: scale(0.8);\n' +
+                          '    background-color: gray;\n' +
+                          '    transition: left 250ms linear;\n' +
+                          '}\n' +
+                          '[type="checkbox"]:checked::before{\n' +
+                          '    background-color: wheat;\n' +
+                          '    left: 1em;\n' +
+                          '}\n' +
+                          '[type="checkbox"]:checked{\n' +
+                          '    background-color: tomato;\n' +
+                          '    border-color: tomato;\n' +
+                          '}' +
+                          '</style>',
+                  inputAttributes: {
+                    autocapitalize: "off"
+                  },
+                  showCancelButton: true,
+                  confirmButtonText: "수정",
+                  preConfirm: function (result) {
+                    const url = "/todo/gmodify?title="+$("#title").val()+
+                            "&glno="+$("#lno").val()+
+                            "&content="+$("#content").val()+
+                            "&isFinished="+$("#isFinished").val()+
+                            "&memberId="+$("#writer").val()+
+                            "&groupName="+groupName+
+                            // "&regDate="+$("#regDate").val()+
+                            // "&modDate="+$("#modDate").val()+
+                            "&dueDate="+$("#dueDate").val()
+                    $(function (){
+                      var request = $.ajax({
+                        url:url,
+                        method:"POST",
+                        dataType:"json"
+                      });
+                      request.done(function (data){
+                        Swal.fire({
+                          title:"수정완료!",
+                          icon:"success"
+                        });
+                        const g_todoBtn = document.getElementById("g_todoBtn")
+                        g_todoBtn.click()
+
+                      });
+                      request.fail(function (jqXHR, textStatus){
+                        alert("Request failed"+textStatus);
+                      });
+                    })
+                  }
+                })
+              }else if(result.isDenied){
+                Swal.fire({
+                  title:"해당 일정을 삭제하시겠습니까?",
+                  icon:"warning",
+                  showCancelButton: true,
+                  confirmButtonText: "삭제",
+                  confirmButtonColor:'#d33',
+                  preConfirm: function (result) {
+                    const url = "/todo/gremove?glno="+data.event.extendedProps.glno+"&memberId="+data.event.extendedProps.memberId
+                    $(function (){
+                      var request = $.ajax({
+                        url:url,
+                        method:"POST",
+                        dataType:"json"
+                      });
+                      request.done(function (data){
+                        Swal.fire({
+                          title:"삭제완료!",
+                          icon:"success"
+                        });
+                        const g_todoBtn = document.getElementById("g_todoBtn")
+                        g_todoBtn.click()
+                      })
+                    })
+                  }
+                });
+              }
+
+            })
+          },
+          dateClick:function (data){
+            var info_date_date = document.getElementById("info_date_date")
+            var info_date_inner = document.getElementById("info_date_inner")
+            var len = data.jsEvent.toElement.getElementsByClassName("fc-sticky")
+            $("#new").ready(function (){
+              const aaa = document.getElementById('new')
+              for(var i =0;i<len.length;i++){
+                aaa.innerHTML+= "title : "+data.jsEvent.toElement.getElementsByClassName("fc-sticky")[i].innerText+'<br/>'
+              }
+            })
+            Swal.fire({
+              title:data.dateStr+""+"일정",
+              html:'<div id="new"></div>',
+              showCancelButton: true,
+              confirmButtonText: "추가",
+              cancelButtonText:"확인",
+              preConfirm: function (result){
+                Swal.fire({
+                  title: "일정추가"+data.dateStr,
+                  html:'<input type="text" id="title" placeholder="title"><br>' +
+                          '<input type="text" id="content" placeholder="content"><br>' +
+                          '<input type="date" id="dueDate" value='+data.dateStr+'><br>' +
+                          '<input type="hidden" id="writer" value='+[[${memberDTO.memberId}]]+'><br>' +
+                          '<input type="hidden" id="groupName" value='+groupName+'>',
+                  showCancelButton: true,
+                  confirmButtonText: "등록",
+                  preConfirm: function (result){
+                    const url = "/todo/gregister?title="+$("#title").val()+
+                            "&content="+$("#content").val()+
+                            "&dueDate="+$("#dueDate").val()+
+                            "&memberId="+$("#writer").val()+
+                            "&groupName="+groupName
+                    $(function (){
+                      var request = $.ajax({
+                        url:url,
+                        method:"POST",
+                        dataType:"json"
+                      });
+                      request.done(function (data){
+                        Swal.fire({
+                          title:"등록완료!",
+                          icon:"success"
+                        });
+                        const g_todoBtn = document.getElementById("g_todoBtn")
+                        g_todoBtn.click()
+                      })
+                    })
+                  }
+                })
+              }
+            })
+          },
+          events:data
+        });
+        calendar.render();
+      });
+      request.fail(function (jqXHR, textStatus){
+        alert("Request failed"+textStatus);
+      });
+    })
+  })
+  var groupName = [[${groupName}]];
+  const url = "/todo/plan?groupName="+groupName
+
+  $(function (){
+    var request = $.ajax({
+      url:url,
+      method:"GET",
+      dataType:"json"
+    });
+    request.done(function (data){
+      var calendarEl = document.getElementById('cal');
+      var calendar = new FullCalendar.Calendar(calendarEl,{
+        initialView: 'dayGridMonth',
+        headerToolbar:{
+          left:'prev,next today',
+          center:'title',
+          right:'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        eventClick: function (data) {
+          $("#isFinished").ready(function (){
+            if($("#isFinished").val()==='true'){
+              $("#isFinished").attr('checked',true)
+
+            }
+            else{$("#isFinished").attr('checked',false)}
+          })
+          Swal.fire({
+            title : data.event.startStr,
+            html: "title : " + data.event.title + '<br>' +
+                    "content : " + data.event.extendedProps.subtitle + '<br>' +
+                    '<input type="checkbox" id="isFinished" disabled name="isFinished"  onclick="if(this.checked){this.value=true;}else {this.value=false}" value='+data.event.extendedProps.finished+' ><br>' +
+                    '<style>[type="checkbox"]{\n' +
+                    '    appearance: none;\n' +
+                    '    position: relative;\n' +
+                    '    border: max(2px,0.1em) solid gray;\n' +
+                    '    border-radius: 1.25em;\n' +
+                    '    width: 2.25em;\n' +
+                    '    height: 1.25em;\n' +
+                    '}\n' +
+                    '[type="checkbox"]::before{\n' +
+                    '    content:"";\n' +
+                    '    position: absolute;\n' +
+                    '    left: 0;\n' +
+                    '    width: 1em;\n' +
+                    '    height: 1em;\n' +
+                    '    border-radius: 50%;\n' +
+                    '    transform: scale(0.8);\n' +
+                    '    background-color: gray;\n' +
+                    '    transition: left 250ms linear;\n' +
+                    '}\n' +
+                    '[type="checkbox"]:checked::before{\n' +
+                    '    background-color: wheat;\n' +
+                    '    left: 1em;\n' +
+                    '}\n' +
+                    '[type="checkbox"]:checked{\n' +
+                    '    background-color: tomato;\n' +
+                    '    border-color: tomato;\n' +
+                    '}\n' +
+                    '[type="checkbox"]:disabled{\n' +
+                    '    border-color: tomato;\n' +
+                    '    opacity: 0.7;\n' +
+                    '    cursor: not-allowed;\n' +
+                    '}\n' +
+                    '[type="checkbox"]:disabled:before{\n' +
+                    '    background-color: wheat;\n' +
+                    '}</style>',
+
+            showCancelButton:true,
+            showDenyButton : true,
+            confirmButtonColor:'#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText:"수정",
+            denyButtonText:"삭제",
+            cancelButtonText:"확인",
+          }).then((result)=>{
+            $("#isFinished").ready(function (){
+              if($("#isFinished").val()==='true'){
+                $("#isFinished").attr('checked',true)
+              }
+              else{$("#isFinished").attr('checked',false)}
+            })
+            if(result.isConfirmed){
+              Swal.fire({
+                title: data.event.startStr,
+                html: 'TITLE<input type="text" id="title" name="title" value=' + data.event.title + '><br>' +
+                        'CONTENT<input type="text" id="content" name="content" value=' + data.event.extendedProps.subtitle + '><br>' +
+                        'FINISHED<input type="checkbox" id="isFinished" name="isFinished"  onclick="if(this.checked){this.value=true;}else {this.value=false}" value='+data.event.extendedProps.finished+' ><br>' +
+                        '<input type="hidden" id="writer" name="writer" value=' + data.event.extendedProps.memberId + '>' +
+                        '<input type="hidden" id="dueDate" value='+data.event.startStr+'>' +
+                        '<input type="hidden" id="regDate" value='+data.event.extendedProps.regDate+'>' +
+                        '<input type="hidden" id="modDate" value='+data.event.extendedProps.modDate+'>' +
+                        '<input type="hidden" id="lno" value='+data.event.extendedProps.glno+'>' +
+                        '<input type="hidden" id="groupName" value='+groupName+'>'+
+                        '<style>' +
+                        '[type="checkbox"]{\n' +
+                        '    appearance: none;\n' +
+                        '    position: relative;\n' +
+                        '    border: max(2px,0.1em) solid gray;\n' +
+                        '    border-radius: 1.25em;\n' +
+                        '    width: 2.25em;\n' +
+                        '    height: 1.25em;\n' +
+                        '}\n' +
+                        '[type="checkbox"]::before{\n' +
+                        '    content:"";\n' +
+                        '    position: absolute;\n' +
+                        '    left: 0;\n' +
+                        '    width: 1em;\n' +
+                        '    height: 1em;\n' +
+                        '    border-radius: 50%;\n' +
+                        '    transform: scale(0.8);\n' +
+                        '    background-color: gray;\n' +
+                        '    transition: left 250ms linear;\n' +
+                        '}\n' +
+                        '[type="checkbox"]:checked::before{\n' +
+                        '    background-color: wheat;\n' +
+                        '    left: 1em;\n' +
+                        '}\n' +
+                        '[type="checkbox"]:checked{\n' +
+                        '    background-color: tomato;\n' +
+                        '    border-color: tomato;\n' +
+                        '}' +
+                        '</style>',
+                inputAttributes: {
+                  autocapitalize: "off"
+                },
+                showCancelButton: true,
+                confirmButtonText: "수정",
+                preConfirm: function (result) {
+                  const url = "/todo/gmodify?title="+$("#title").val()+
+                          "&glno="+$("#lno").val()+
+                          "&content="+$("#content").val()+
+                          "&isFinished="+$("#isFinished").val()+
+                          "&memberId="+$("#writer").val()+
+                          "&groupName="+groupName+
+                          // "&regDate="+$("#regDate").val()+
+                          // "&modDate="+$("#modDate").val()+
+                          "&dueDate="+$("#dueDate").val()
+                  $(function (){
+                    var request = $.ajax({
+                      url:url,
+                      method:"POST",
+                      dataType:"json"
+                    });
+                    request.done(function (data){
+                      Swal.fire({
+                        title:"수정완료!",
+                        icon:"success"
+                      });
+                      const g_todoBtn = document.getElementById("g_todoBtn")
+                      g_todoBtn.click()
+
+                    });
+                    request.fail(function (jqXHR, textStatus){
+                      alert("Request failed"+textStatus);
+                    });
+                  })
+                }
+              })
+            }else if(result.isDenied){
+              Swal.fire({
+                title:"해당 일정을 삭제하시겠습니까?",
+                icon:"warning",
+                showCancelButton: true,
+                confirmButtonText: "삭제",
+                confirmButtonColor:'#d33',
+                preConfirm: function (result) {
+                  const url = "/todo/gremove?glno="+data.event.extendedProps.glno+"&memberId="+data.event.extendedProps.memberId
+                  $(function (){
+                    var request = $.ajax({
+                      url:url,
+                      method:"POST",
+                      dataType:"json"
+                    });
+                    request.done(function (data){
+                      Swal.fire({
+                        title:"삭제완료!",
+                        icon:"success"
+                      });
+                      const g_todoBtn = document.getElementById("g_todoBtn")
+                      g_todoBtn.click()
+                    })
+                  })
+                }
+              });
+            }
+
+          })
+        },
+        dateClick:function (data){
+          var info_date_date = document.getElementById("info_date_date")
+          var info_date_inner = document.getElementById("info_date_inner")
+          var len = data.jsEvent.toElement.getElementsByClassName("fc-sticky")
+          $("#new").ready(function (){
+            const aaa = document.getElementById('new')
+            for(var i =0;i<len.length;i++){
+              aaa.innerHTML+= "title : "+data.jsEvent.toElement.getElementsByClassName("fc-sticky")[i].innerText+'<br/>'
+            }
+          })
+          Swal.fire({
+            title:data.dateStr+""+"일정",
+            html:'<div id="new"></div>',
+            showCancelButton: true,
+            confirmButtonText: "추가",
+            cancelButtonText:"확인",
+            preConfirm: function (result){
+              Swal.fire({
+                title: "일정추가"+data.dateStr,
+                html:'<input type="text" id="title" placeholder="title"><br>' +
+                        '<input type="text" id="content" placeholder="content"><br>' +
+                        '<input type="date" id="dueDate" value='+data.dateStr+'><br>' +
+                        '<input type="hidden" id="writer" value='+[[${memberDTO.memberId}]]+'><br>' +
+                        '<input type="hidden" id="groupName" value='+groupName+'>',
+                showCancelButton: true,
+                confirmButtonText: "등록",
+                preConfirm: function (result){
+                  const url = "/todo/gregister?title="+$("#title").val()+
+                          "&content="+$("#content").val()+
+                          "&dueDate="+$("#dueDate").val()+
+                          "&memberId="+$("#writer").val()+
+                          "&groupName="+groupName
+                  $(function (){
+                    var request = $.ajax({
+                      url:url,
+                      method:"POST",
+                      dataType:"json"
+                    });
+                    request.done(function (data){
+                      Swal.fire({
+                        title:"등록완료!",
+                        icon:"success"
+                      });
+                      const g_todoBtn = document.getElementById("g_todoBtn")
+                      g_todoBtn.click()
+                    })
+                  })
+                }
+              })
+            }
+          })
+        },
+        events:data
+      });
+      calendar.render();
+    });
+    request.fail(function (jqXHR, textStatus){
+      alert("Request failed"+textStatus);
+    });
+  })
+</script>
+</html>

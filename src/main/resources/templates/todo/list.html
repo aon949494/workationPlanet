@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Todo List</title>
+</head>
+<body>
+<h1 th:text="${'Todo List'}"></h1>
+<ul>
+  <li th:each="dtoList:${list}">
+    [[${dtoList.lno}]]
+    <input type="checkbox" th:checked="${dtoList.isFinished}"/>
+    <!--    [[${dtoList.isFinished}]]-->
+    <a th:href="@{/todo/read(lno=${dtoList.lno})}">[[${dtoList.title}]]</a>
+    <!--        [[${dtoList.title}]]-->
+    [[${dtoList.dueDate}]]
+    [[${dtoList.writer}]]
+    [[${dtoList.content}]]
+    [[${dtoList.regDate}]]
+<!--    [[${#temporals.format(dtoList.regDate, 'yyyy-MM-dd')}]]-->
+    [[${dtoList.groupName}]]
+  </li>
+</ul>
+<div>
+  <a th:href="|@{/todo/register}|">
+    <button type="button">Register</button>
+  </a>
+</div>
+
+<script th:inline="javascript">
+
+</script>
+</body>
+</html>

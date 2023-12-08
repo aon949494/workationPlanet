@@ -1,0 +1,183 @@
+@charset "UTF-8";
+.wrap{
+    width: 1200px;
+    height: 850px;
+    margin: 0 auto;
+}
+a{
+    color: black;
+}
+.myPage{
+    width: 1200px;
+    height: 30px;
+    float: right;
+}
+.loginMember{
+    width: 300px;
+    height: 30px;
+    float: right;
+    text-align: right;
+    padding-right: 30px;
+    box-sizing: border-box;
+}
+.myPage_page{
+    width: 100px;
+    height: 30px;
+    float: right;
+}
+.logout{
+    width: 70px;
+    height: 30px;
+    float: right;
+    margin-right: 50px;
+}
+.main{
+    width: 1200px;
+    height: 850px;
+}
+.main_1{
+    width: 200px;
+    height: 850px;
+    float: left;
+}
+.main_1_1{
+    width: 200px;
+    height: 150px;
+    background-color: #EFFBFB;
+}
+.test{
+    width: 200px;
+    height: 700px;
+    box-sizing: border-box;
+    border: black 1px;
+    border-right-style: solid;
+    border-radius: 3px;
+    background-color: #EFFBFB;
+}
+.main_1_2{
+    width: 190px;
+    height: 650px;
+    padding-left: 20px;
+    padding-top: 10px;
+    box-sizing: border-box;
+}
+.main_1_3{
+    width: 190px;
+    height: 50px;
+    padding-left: 20px;
+    padding-top: 10px;
+    box-sizing: border-box;
+    font-size: 20px;
+}
+#personal{
+    font-size: 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+#personal:hover{
+    background-color: cadetblue;
+}
+.groupName{
+    font-size: 20px;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+.groupName:hover{
+    background-color: cadetblue;
+}
+.main_1_3 a{
+    font-size: 15px;
+    text-decoration: none;
+    color: black;
+}
+.main_2{
+    width: 1000px;
+    height: 850px;
+    float: left;
+}
+.con{
+    width: 1000px;
+    height: 150px;
+    background-color: #EFFBFB;
+    border: black 1px;
+    border-bottom-style: solid;
+    border-radius: 3px;
+}
+.calendar{
+    width: 1000px;
+    height: 700px;
+}
+
+.tab__contents{
+    display: none;
+}
+
+.tab__contents.active{
+    display: inherit;
+}
+.tab__contents_inner{
+    width: 600px;
+    height: 500px;
+    margin-top: 10px;
+    margin-left: 50px;
+    font-size: 20px;
+}
+.tab__contents_inner a{
+    text-decoration: none;
+    color: black;
+}
+.text{
+    display: none;
+}
+.tab__list a{
+    font-size: 20px;
+    text-decoration: none;
+    color: black;
+}
+#logoImage{
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+#logoName{
+    width: 500px;
+    height: 80px;
+    box-sizing: border-box;
+    margin-top: 40px;
+    margin-left: 250px;
+}
+#main{
+    width: 1000px;
+    height: 600px;
+    box-sizing: border-box;
+}
+#main_inner1{
+    width: 1000px ;
+    height: 100px;
+    text-align: center;
+    box-sizing: border-box;
+}
+#main_inner2{
+    text-align: center;
+    box-sizing: border-box;
+    width: 650px;
+    height: 400px;
+    margin-left: 200px;
+}
+#personal_cal{
+    float: left;
+    width: 300px;
+    height: 400px;
+    margin-right: 5px;
+    border: black solid 1px;
+    border-radius: 10px;
+}
+#group_cal{
+    float: left;
+    width: 300px;
+    height: 400px;
+    border: black solid 1px;
+    border-radius: 10px;
+}

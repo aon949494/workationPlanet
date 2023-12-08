@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Register</title>
+</head>
+<body>
+<div>
+  <h1>Register</h1>
+  <form th:action="@{/todo/register}" th:method="post">
+
+    <div>
+      <span>Title</span>
+      <input type="text" name="title" placeholder="Title">
+    </div>
+
+    <div>
+      <span>DueDate</span>
+      <input type="date" name="dueDate">
+    </div>
+
+    <div>
+      <span>Writer</span>
+      <input type="text" name="writer" th:value="${memberId}" placeholder="Writer">
+    </div>
+
+    <div>
+      <span>Content</span>
+      <textarea rows="5" name="content"></textarea>
+    </div>
+
+    <!--    <div>-->
+    <!--      <span>RegDate</span>-->
+    <!--      <input type="date" name="regDate" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" readonly>-->
+    <!--    </div>-->
+
+    <div>
+      <div>
+        <button type="submit">Submit</button>
+        <button type="reset">Reset</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+</body>
+
+<script th:inline="javascript">
+  const errors= [[${errors}]]
+  let errorMsg=''
+  if(errors){
+    for(let i=0; i<errors.length; i++){
+      errorMsg += `${errors[i].field}은(는) ${errors[i].code}`
+    }
+    alert(errorMsg)
+  }
+
+</script>
+</html>

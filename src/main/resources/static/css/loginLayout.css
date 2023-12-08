@@ -1,0 +1,190 @@
+@charset "UTF-8";
+a{
+    color: black;
+}
+#wrap{
+    margin: 0 auto;
+    margin-top: 50px;
+    width: 1000px;
+    height: 700px;
+
+}
+#left{
+    width: 400px;
+    height: 700px;
+
+    float: left;
+}
+#right{
+    width: 600px;
+    height: 700px;
+    float: left;
+}
+#loginText{
+    width: 400px;
+    box-sizing: border-box;
+    margin: 0 auto;
+}
+#loginorjoin{
+    margin: 0 auto;
+    margin-top: 100px;
+    width: 500px;
+    height: 500px;
+
+    text-align: center;
+    box-sizing: border-box;
+    padding-top: 100px;
+}
+#loginBtn{
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: inherit;
+    cursor: pointer;
+    min-width: 40%;
+    height: auto;
+    padding: 0.65rem 1.25rem;
+    border: none;
+    outline: none;
+    border-radius: 2rem;
+    background-color: darkslateblue;
+    text-transform: capitalize;
+    text-rendering: optimizeLegibility;
+    float: right;
+    margin-top: 5px;
+    margin-right: 50px;
+}
+#registerBtn{
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: inherit;
+    cursor: pointer;
+    min-width: 40%;
+    height: auto;
+    padding: 0.65rem 1.25rem;
+    border: none;
+    outline: none;
+    border-radius: 2rem;
+    background-color: cornflowerblue;
+    text-transform: capitalize;
+    text-rendering: optimizeLegibility;
+    float: left;
+    margin-top: 5px;
+    margin-left: 50px;
+}
+#backLogin{
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    float: left;
+    margin-left: 40px;
+    box-sizing: border-box;
+}
+
+#logo{
+    float: left;
+    box-sizing: border-box;
+    margin-top: 100px;
+}
+#idck_1{
+    float: right;
+    margin-top: 23px;
+}
+.text_input{
+    float: left;
+    margin-left: 50px;
+    margin-top: 5px;
+}
+#introduce{
+    margin-top: 20px;
+}
+#signUp {
+    float: left;
+    margin-top: 180px;
+    box-sizing: border-box;
+    margin-left: -120px;
+}
+#signUp_registerBtn{
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: inherit;
+    cursor: pointer;
+    min-width: 40%;
+    height: auto;
+    padding: 0.65rem 1.25rem;
+    border: none;
+    outline: none;
+    border-radius: 2rem;
+    background-color: cornflowerblue;
+    text-transform: capitalize;
+    text-rendering: optimizeLegibility;
+}
+#IDCK{
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: inherit;
+    cursor: pointer;
+    min-width: 40%;
+    height: auto;
+    padding: 0.65rem 1.25rem;
+    border: none;
+    outline: none;
+    border-radius: 2rem;
+    background-color: wheat;
+    text-transform: capitalize;
+    text-rendering: optimizeLegibility;
+}
+p{
+    margin: auto 0;
+    position: relative;
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+}
+p input{
+    background-color: transparent;
+    box-sizing: border-box;
+    padding: 20px 0 0;
+    width: 100%;
+    height: 100%;
+    border: 0 none;
+    color:#595f63;
+    outline:none;
+}
+p label{
+    position:absolute;
+    left:0%;
+    bottom:0;
+    width:100%;
+    height:100%;
+    border-bottom:1px solid #000;
+    text-align:left;
+    pointer-events:none;
+}
+p label:after {
+    content:"";
+    position:absolute;
+    left:0;
+    bottom:-1px;
+    width:0;
+    height:100%;
+    border-bottom:3px solid #5fa8d3;
+    transition:all .3s ease;
+}
+p label span {
+    position:absolute;
+    left:0;
+    bottom:5px;
+    transition:all .3s ease; }
+p input:focus + label span, p input:valid + label span {
+    transform:translateY(-150%);
+    font-size:10px;
+    color:#5fa8d3;
+}
+p input:focus + label::after, p input:valid + label::after {
+    width:100%;
+    transform:translateX(0);
+}

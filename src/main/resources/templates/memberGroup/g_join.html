@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+</head>
+<body>
+<div>
+    <h1>Group Join</h1>
+    <form th:action="@{/memberGroup/g_join}" th:method="post">
+<!--    <form th:action="@{/mainy}" th:method="post">-->
+        <div>
+            <span>Group Name</span>
+            <input type="text" name="groupName" placeholder="Group Name">
+        </div>
+
+        <div>
+            <span>Group PW</span>
+            <input type="password" name="groupPw" placeholder="Group PW">
+        </div>
+
+        <div>
+            <span>User Name</span>
+            <input type="text" name="memberId" th:value="${memberDTO.memberId}" readonly>
+        </div>
+
+        <div>
+            <div>
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
+        </div>
+    </form>
+
+    <div th:if="${error}">
+        <p th:text="${error}"></p>
+    </div>
+</div>
+
+</body>
+
+<script th:inline="javascript">
+    const errors= [[${errors}]]
+    let errorMsg=''
+    if(errors){
+        for(let i=0; i<errors.length; i++){
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code}`
+        }
+        alert(errorMsg)
+    }
+
+</script>
+</html>

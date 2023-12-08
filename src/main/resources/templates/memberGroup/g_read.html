@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Group List</title>
+</head>
+<body>
+<h1>Read</h1>
+
+<div>
+    <span>Group Name</span>
+    <input type="text" name="groupName" th:value="${groupDTO.groupName}" readonly>
+</div>
+
+<div>
+    <span>Group Manager</span>
+    <input type="text" name="groupManager" th:value="${groupDTO.groupManager}" readonly>
+</div>
+
+<div>
+    <a th:href="|@{/memberGroup/g_modify(groupName=${groupDTO.groupName})}|">
+        <button type="button">Modify</button>
+    </a>
+    <a th:href="|@{/memberGroup/g_list}|">
+        <button type="button">List</button>
+    </a>
+</div>
+
+</body>
+</html>

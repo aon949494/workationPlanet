@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Todo List</title>
+</head>
+<body>
+<div>
+    <h1>Modify</h1>
+    <form th:action="@{/todo/modify}" method="post" id="f1">
+        <div>
+            <span>LNO</span>
+            <input type="text" name="lno" th:value="${todoDTO.lno}" readonly>
+        </div>
+
+        <div>
+            <span>IsFinished</span>
+            <input type="checkbox" name="isFinished" th:value="${todoDTO.isFinished}">
+        </div>
+
+        <div>
+            <span>Title</span>
+            <input type="text" name="title" th:value="${todoDTO.title}">
+        </div>
+
+        <div>
+            <span>DueDate</span>
+            <input type="date" name="dueDate" th:value="${todoDTO.dueDate}">
+        </div>
+
+        <div>
+            <span>Writer</span>
+            <input type="text" name="writer" th:value="${todoDTO.writer}" readonly>
+        </div>
+
+        <div>
+            <span>Content</span>
+            <input type="text" name="content" th:value="${todoDTO.content}">
+        </div>
+
+        <div>
+            <span>RegDate</span>
+            <input type="date" name="regDate" th:value="${todoDTO.regDate}" readonly>
+        </div>
+
+        <div>
+            <span>GroupName</span>
+            <input type="text" name="groupName" th:value="${todoDTO.groupName}" readonly>
+        </div>
+
+        <div>
+            <div>
+                <button type="button" class="btn btn-primary listBtn">List</button>
+                <button type="button" class="btn btn-secondary modBtn">Modify</button>
+                <button type="button" class="btn btn-danger deleteBtn">Delete</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+</body>
+
+<script th:inline="javascript">
+    const errors = [[${errors}]]
+    let errorMsg=''
+
+    if(errors){
+        for(let i=0; i<errors.length ; i++){
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code}`
+        }
+        history.replaceState({}, null, null)
+        alert(errorMsg)
+    }
+
+    const formObj = document.querySelector("#f1")
+
+    document.querySelector(".modBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        formObj.action = '/todo/modify'
+        formObj.method = 'post'
+        formObj.submit()
+    }, false)
+
+    document.querySelector(".listBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        formObj.reset()
+        self.location = '/todo/list'
+    }, false)
+
+    document.querySelector(".deleteBtn").addEventListener("click", function (e){
+        e.preventDefault()
+        e.stopPropagation()
+        formObj.action = '/todo/delete'
+        formObj.method = 'post'
+        formObj.submit()
+    }, false)
+</script>
+</html>

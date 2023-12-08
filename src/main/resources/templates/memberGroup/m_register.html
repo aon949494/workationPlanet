@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout/loginLayout.html}">
+<div id="loginorjoin" layout:fragment="content">
+    <img src="/images/화살표.png" id="backLogin">
+    <h1 id="logo">Sign Up</h1>
+    <form th:action="@{/memberGroup/m_register}" th:method="post" onsubmit="return idcknot()">
+        <div id="signUp">
+            <button type="submit" id="signUp_registerBtn">Sign Up</button>
+        </div>
+        <section class="text_input">
+            <p>
+                <input type="text" name="memberId" autocomplete="off" id = "memberId" title="n" required>
+                <label for="memberId"><span id="idckText">ID</span></label>
+            </p>
+            <p>
+                <input type="password" name="memberPw" id="memberPw"required>
+                <label for="memberPw"><span>PW</span></label>
+            </p>
+
+            <p>
+                <input type="text" name="memberName" id="memberName"required>
+                <label for="memberName"><span>Name</span></label>
+            </p>
+
+            <p>
+                <input type="text" name="affiliation" id="affiliation">
+                <label for="affiliation"><span>affiliation</span></label>
+            </p>
+            <p>
+                <input type="text" name="email" id="email" required>
+                <label for="email"><span>email</span></label>
+            </p>
+            <p>
+                <textarea name="introduce" placeholder="introduce" id="introduce"required></textarea>
+            </p>
+        </section>
+
+        <div id="idck_1">
+            <button type="button" id="IDCK">ID중복체크</button><br>
+        </div>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.slim.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script layout:fragment="script" th:inline="javascript">
+
+    const errors= [[${errors}]]
+    let errorMsg=''
+    if(errors){
+        for(let i=0; i<errors.length; i++){
+            errorMsg += `${errors[i].field}은(는) ${errors[i].code}`
+        }
+        alert(errorMsg)
+    }
+    const memberList = [[${mem}]]
+    var dto = []
+    memberList.forEach(function (mem,index,array){
+        dto.push(mem);
+        console.log(mem);
+    });
+    $("#IDCK").click(function (){
+        var memberId = document.getElementById("memberId").value;
+        var idckText = document.getElementById("idckText");
+        console.log(dto)
+        if(dto.length==0){
+            if(memberId.trim()==""||memberId==null){
+                alert("ID를 입력하세요!")
+                idckText.textContent="ID"
+                $("#idckText").css("color","black")
+            }
+            else{
+                idckText.textContent="ID"
+                idckText.textContent+="\n사용가능한 ID입니다."
+                document.getElementById("memberId").title="y";
+                $("#idckText").css("color","black")
+            }
+        }
+        for(var i=0;i<dto.length;i++){
+            if(memberId.trim()==""||memberId==null){
+                alert("ID를 입력하세요!")
+                idckText.textContent="ID"
+                $("#idckText").css("color","black")
+                break;
+            }
+            else if(dto.includes(memberId)){
+                idckText.textContent="ID"
+                idckText.textContent+="\n중복된 ID입니다!"
+                $("#idckText").css("color","red")
+                memberId.title="n";
+                break;
+            }
+            else{
+                idckText.textContent="ID"
+                idckText.textContent+="\n사용가능한 ID입니다."
+                document.getElementById("memberId").title="y";
+                $("#idckText").css("color","black")
+            }
+        }
+    })
+    $("#memberId").change(function (){
+        document.getElementById("memberId").title="n";
+        idckText.textContent="ID"
+        $("#idckText").css("color","black")
+    })
+    function idcknot(){
+        if(document.getElementById("memberId").title=='n'){
+            alert("ID증복체크해주세요!");
+            document.getElementById("memberId").focus();
+            return false;
+        }
+    }
+    $(function () {
+        $("#loginorjoin").fadeIn(500, function () {
+            $(this).animate({
+                "top": "150px"
+            },1000);
+        });
+        $("#backLogin").click(function () {
+            $("#loginorjoin").animate({
+                "opacity": "0",
+                "top": "10px"
+            },500, function () {
+                document.location.href="/memberGroup/login"
+            });
+
+            return false;
+        });
+    });
+</script>
+</html>
